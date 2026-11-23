@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "GiroBlu - Executar Main",
+            "request": "launch",
+            "mainClass": "apresentacao.Main",
+            "cwd": "${workspaceFolder}",
+            "classPaths": [
+                "${workspaceFolder}/bin",
+                "${workspaceFolder}/lib/junit-platform-console-standalone-1.11.4.jar"
+            ],
+            "console": "integratedTerminal",
+            "vmArgs": "-Dfile.encoding=UTF-8"
+        }
+    ]
+}
