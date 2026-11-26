@@ -2,7 +2,6 @@ package negocio;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import negocio.excecao.SaldoInsuficienteException;
 
@@ -266,21 +265,21 @@ public class Plataforma {
 
   /** @return cópia das estações */
   public List<Estacao> getEstacoes() {
-    return Collections.unmodifiableList(new ArrayList<>(estacoes));
+    return List.copyOf(estacoes);
   }
 
   /** @return cópia dos veículos */
   public List<Veiculo> getVeiculos() {
-    return Collections.unmodifiableList(new ArrayList<>(veiculos));
+    return List.copyOf(veiculos);
   }
 
   /** @return cópia dos usuários */
   public List<Usuario> getUsuarios() {
-    return Collections.unmodifiableList(new ArrayList<>(usuarios));
+    return List.copyOf(usuarios);
   }
 
   /** @return cópia das viagens */
   public List<Viagem> getViagens() {
-    return Collections.unmodifiableList(new ArrayList<>(viagens));
+    return List.copyOf(viagens);
   }
 }

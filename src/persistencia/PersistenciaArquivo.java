@@ -2,14 +2,15 @@ package persistencia;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import negocio.BicicletaEletrica;
@@ -29,18 +30,17 @@ import negocio.Viagem;
 
 /** CAMADA DE PERSISTÊNCIA Grava e restaura os dados do GiroBlu em CSV. */
 public class PersistenciaArquivo {
-  private final Path diretorio;
+  private final File diretorio;
 
   /** Cria o gravador no diretório informado. @param diretorioDados diretório */
   public PersistenciaArquivo(String diretorioDados) {
     if (diretorioDados == null || diretorioDados.isBlank())
       throw new IllegalArgumentException("O diretório de dados não pode ser vazio.");
-    diretorio = Paths.get(diretorioDados);
-    try {
-      Files.createDirectories(diretorio);
-    } catch (IOException excecao) {
-      throw new IllegalArgumentException("Não foi possível acessar o diretório de dados.", excecao);
-    }
+    diretorio = new File(diretorioDados);
+    if (!diretorio.exists() && !diretorio.mkdirs())
+      throw new IllegalArgumentException("Não foi possível criar o diretório de dados.");
+    if (!diretorio.isDirectory())
+      throw new IllegalArgumentException("O caminho informado não é um diretório.");
   }
 
   /**
@@ -105,18 +105,24 @@ public class PersistenciaArquivo {
     for (ViagemPersistida dados : viagens) {
       if (dados.termino != null)
         eventos.add(new EventoPersistido(dados.termino, 1,
-            dados.usuario, null, dados.valor));
+            dados.usuario, dados.veiculo.getCodigo(), dados.valor));
     }
-    eventos.sort(Comparator.comparing(EventoPersistido::dataHora)
-        .thenComparing(EventoPersistido::ordem));
+    for (int i = 0; i < eventos.size(); i++) {
+      for (int j = 0; j < eventos.size() - 1; j++) {
+        if (compararEventos(eventos.get(j), eventos.get(j + 1)) > 0) {
+          EventoPersistido temporario = eventos.get(j);
+          eventos.set(j, eventos.get(j + 1));
+          eventos.set(j + 1, temporario);
+        }
+      }
+    }
 
     for (EventoPersistido evento : eventos) {
       if (evento.ordem == 0)
         evento.usuario.getCarteira().creditar(new Recarga(evento.dataHora, evento.valor));
       else
         evento.usuario.getCarteira().debitarViagem(evento.dataHora,
-            "Viagem - " + buscarViagemPorUsuarioETermino(viagens, evento.usuario, evento.dataHora),
-            evento.valor);
+            "Viagem - " + evento.codigoVeiculo, evento.valor);
     }
 
     for (ViagemPersistida dados : viagens) {
@@ -180,11 +186,12 @@ public class PersistenciaArquivo {
   }
 
   private List<String[]> ler(String nome) {
-    Path arquivo = diretorio.resolve(nome);
+    File arquivo = new File(diretorio, nome);
     List<String[]> linhas = new ArrayList<>();
-    if (!Files.exists(arquivo))
+    if (!arquivo.exists())
       return linhas;
-    try (BufferedReader leitor = Files.newBufferedReader(arquivo, StandardCharsets.UTF_8)) {
+    try (BufferedReader leitor = new BufferedReader(
+        new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
       String linha;
       while ((linha = leitor.readLine()) != null) {
         if (!linha.isBlank())
@@ -197,8 +204,9 @@ public class PersistenciaArquivo {
   }
 
   private void escrever(String nome, List<String[]> linhas) {
-    Path arquivo = diretorio.resolve(nome);
-    try (BufferedWriter escritor = Files.newBufferedWriter(arquivo, StandardCharsets.UTF_8)) {
+    File arquivo = new File(diretorio, nome);
+    try (BufferedWriter escritor = new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(arquivo), StandardCharsets.UTF_8))) {
       for (String[] campos : linhas) {
         List<String> formatados = new ArrayList<>();
         for (String campo : campos)
@@ -219,24 +227,35 @@ public class PersistenciaArquivo {
 
   private String[] separar(String linha) {
     List<String> campos = new ArrayList<>();
-    StringBuilder atual = new StringBuilder();
+    String atual = "";
     boolean aspas = false;
     for (int i = 0; i < linha.length(); i++) {
       char caractere = linha.charAt(i);
       if (caractere == '"') {
         if (aspas && i + 1 < linha.length() && linha.charAt(i + 1) == '"') {
-          atual.append('"');
+          atual += '"';
           i++;
         } else
           aspas = !aspas;
       } else if (caractere == ';' && !aspas) {
-        campos.add(atual.toString());
-        atual.setLength(0);
+        campos.add(atual);
+        atual = "";
       } else
-        atual.append(caractere);
+        atual += caractere;
     }
-    campos.add(atual.toString());
+    campos.add(atual);
     return campos.toArray(new String[0]);
+  }
+
+  private int compararEventos(EventoPersistido primeiro, EventoPersistido segundo) {
+    int comparacao = primeiro.dataHora.compareTo(segundo.dataHora);
+    if (comparacao != 0)
+      return comparacao;
+    if (primeiro.ordem < segundo.ordem)
+      return -1;
+    if (primeiro.ordem > segundo.ordem)
+      return 1;
+    return 0;
   }
 
   private Plano criarPlano(String tipo) {
@@ -294,23 +313,56 @@ public class PersistenciaArquivo {
     throw new IllegalArgumentException("Veículo não encontrado: " + codigo);
   }
 
-  private String buscarViagemPorUsuarioETermino(List<ViagemPersistida> viagens,
-      Usuario usuario, LocalDateTime termino) {
-    for (ViagemPersistida viagem : viagens)
-      if (viagem.usuario == usuario && termino.equals(viagem.termino))
-        return viagem.veiculo.getCodigo();
-    return "";
+  private static class RecargaPersistida {
+    private final Usuario usuario;
+    private final LocalDateTime dataHora;
+    private final double valor;
+
+    private RecargaPersistida(Usuario usuario, LocalDateTime dataHora, double valor) {
+      this.usuario = usuario;
+      this.dataHora = dataHora;
+      this.valor = valor;
+    }
   }
 
-  private record RecargaPersistida(Usuario usuario, LocalDateTime dataHora, double valor) {
+  private static class ViagemPersistida {
+    private final Usuario usuario;
+    private final Veiculo veiculo;
+    private final Estacao origem;
+    private final String destino;
+    private final LocalDateTime inicio;
+    private final LocalDateTime termino;
+    private final int duracao;
+    private final double valor;
+
+    private ViagemPersistida(Usuario usuario, Veiculo veiculo, Estacao origem,
+        String destino, LocalDateTime inicio, LocalDateTime termino,
+        int duracao, double valor) {
+      this.usuario = usuario;
+      this.veiculo = veiculo;
+      this.origem = origem;
+      this.destino = destino;
+      this.inicio = inicio;
+      this.termino = termino;
+      this.duracao = duracao;
+      this.valor = valor;
+    }
   }
 
-  private record ViagemPersistida(Usuario usuario, Veiculo veiculo, Estacao origem,
-      String destino, LocalDateTime inicio, LocalDateTime termino,
-      int duracao, double valor) {
-  }
+  private static class EventoPersistido {
+    private final LocalDateTime dataHora;
+    private final int ordem;
+    private final Usuario usuario;
+    private final String codigoVeiculo;
+    private final double valor;
 
-  private record EventoPersistido(LocalDateTime dataHora, int ordem, Usuario usuario,
-      String descricao, double valor) {
+    private EventoPersistido(LocalDateTime dataHora, int ordem, Usuario usuario,
+        String codigoVeiculo, double valor) {
+      this.dataHora = dataHora;
+      this.ordem = ordem;
+      this.usuario = usuario;
+      this.codigoVeiculo = codigoVeiculo;
+      this.valor = valor;
+    }
   }
 }

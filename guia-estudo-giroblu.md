@@ -66,6 +66,7 @@ Conceitos desta etapa:
 - Encapsulamento.
 - `protected`.
 - `List` e `ArrayList`.
+- `List.copyOf` para devolver uma cópia que não pode ser modificada.
 - Comparação de textos com `equals` e `equalsIgnoreCase`.
 - Atributos `final`.
 - Métodos `static`.
@@ -151,8 +152,14 @@ Estude nesta ordem:
 
 Para persistência, peça:
 
+- Como `File` representa o diretório e os arquivos CSV.
+- Como `FileInputStream`, `InputStreamReader` e `BufferedReader` leem texto em UTF-8.
+- Como `FileOutputStream`, `OutputStreamWriter` e `BufferedWriter` gravam texto em UTF-8.
 - Como cada arquivo CSV é separado por ponto e vírgula.
+- Como o leitor reconhece ponto e vírgula dentro de um campo entre aspas.
 - Como o sistema lê cada linha.
+- Como classes internas simples guardam os dados lidos, sem usar `record`.
+- Como recargas e viagens são ordenadas por data e hora usando loops.
 - Como os objetos são reconstruídos.
 - Como nome, e-mail e código ligam referências entre classes.
 - Como estado, bateria e viagens em andamento são preservados.

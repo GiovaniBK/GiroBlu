@@ -2,7 +2,6 @@ package negocio;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class Carteira {
 
     /** @return cópia não modificável das recargas */
     public List<Recarga> getRecargas() {
-        return Collections.unmodifiableList(new ArrayList<>(recargas));
+        return List.copyOf(recargas);
     }
 
     /** @return extrato em ordem cronológica */
@@ -65,6 +64,6 @@ public class Carteira {
         List<Lancamento> ordenado = new ArrayList<>(lancamentos);
         ordenado.sort(Comparator.comparing(Lancamento::getDataHora)
                 .thenComparing(Lancamento::getDescricao));
-        return Collections.unmodifiableList(ordenado);
+        return List.copyOf(ordenado);
     }
 }

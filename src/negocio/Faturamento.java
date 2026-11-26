@@ -2,7 +2,6 @@ package negocio;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,7 +48,7 @@ public class Faturamento {
 
   /** @return cópia dos totais por tipo */
   public List<ItemFaturamento> getItens() {
-    return Collections.unmodifiableList(new ArrayList<>(itens));
+    return List.copyOf(itens);
   }
 
   /** @return quantidade total de viagens */

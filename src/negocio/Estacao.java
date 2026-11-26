@@ -1,7 +1,6 @@
 package negocio;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import negocio.excecao.EstacaoLotadaException;
 
@@ -68,12 +67,12 @@ public class Estacao {
         for (Veiculo veiculo : veiculosEstacionados)
             if (Veiculo.DISPONIVEL.equals(veiculo.getStatus()))
                 disponiveis.add(veiculo);
-        return Collections.unmodifiableList(disponiveis);
+        return List.copyOf(disponiveis);
     }
 
     /** @return cópia dos veículos estacionados */
     public List<Veiculo> getVeiculosEstacionados() {
-        return Collections.unmodifiableList(new ArrayList<>(veiculosEstacionados));
+        return List.copyOf(veiculosEstacionados);
     }
 
     /** @return quantidade estacionada */
