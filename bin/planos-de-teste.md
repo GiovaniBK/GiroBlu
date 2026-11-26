@@ -1,16 +1,28 @@
-# Plano de testes — GiroBlu Fase 1
+# Plano de testes — GiroBlu Fases 1 a 4
 
-| Caso | Descrição | Entrada | Saída esperada | Método JUnit |
-|---|---|---|---|---|
-| PL01 | Cálculo avulso | Bicicleta mecânica, 12 minutos | R$ 2,80 | PlanoAvulsoTest.calculaPrecoCompletoDaBicicletaMecanica |
-| PL02 | Cálculo universitário elétrico | Bicicleta elétrica, 25 minutos | R$ 4,75 | PlanoUniversitarioTest.aplicaDescontoNaBicicletaEletrica |
-| PL03 | Cálculo mensal | Patinete, 20 minutos | R$ 2,00 | PlanoMensalTest.cobraApenasMinutosExcedentesDoPatinete |
-| PL04 | Patinete universitário | 10 minutos | R$ 7,00 | PlanoUniversitarioTest.patineteNaoRecebeDesconto |
-| PL05 | Mensal com faixa gratuita | Mecânica, 10 minutos | R$ 0,00 | PlanoMensalTest.primeiraFaixaGratuita |
-| PL06 | Limite de bateria elétrica | 19% e 20% | 19% rejeitado; 20% aceito | BicicletaEletricaTest.liberaCom20ENaoLiberaCom19 |
-| PL07 | Devolução em estação lotada | Destino sem vagas | Estado e bateria não mudam | BicicletaEletricaTest.devolucaoAtualizaBateriaNaoAlteraEmLotada |
-| PL08 | Estado em uso e manutenção | Veículo estacionado | Em uso não ocupa vaga; manutenção ocupa | VeiculoTest.emUsoNaoPermaneceNaEstacao |
-| PL09 | Estação lotada | Uma vaga ocupada | EstacaoLotadaException | EstacaoTest.lotadaNaoEstacionaVeiculo |
-| PL10 | Carteira negativa | Crédito R$ 10, débito R$ 12,50 | Saldo R$ -2,50 | CarteiraTest.carteiraCreditaEDebitaPermitindoSaldoNegativo |
-| PL11 | Arredondamento universitário | Mecânica, 1 minuto | R$ 0,58 | PlanoUniversitarioTest.arredondaComHalfUp |
-| PL12 | Piso da bateria do patinete | 20% por 20 minutos | 0% | PatineteEletricoTest.consumoDePatineteEValorMinimoDaBateria |
+| Caso | Descrição                                | Entrada                                  | Saída esperada                          | Método JUnit                                                              |
+| ---- | ---------------------------------------- | ---------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------- | --- | ---- | --------------------------- | ------------------------ | ---------------------------------- | ---------------------------------------------------- |
+| PL01 | Cálculo avulso                           | Bicicleta mecânica, 12 minutos           | R$ 2,80                                 | PlanoAvulsoTest.calculaPrecoCompletoDaBicicletaMecanica                   |
+| PL02 | Cálculo universitário elétrico           | Bicicleta elétrica, 25 minutos           | R$ 4,75                                 | PlanoUniversitarioTest.aplicaDescontoNaBicicletaEletrica                  |
+| PL03 | Cálculo mensal                           | Patinete, 20 minutos                     | R$ 2,00                                 | PlanoMensalTest.cobraApenasMinutosExcedentesDoPatinete                    |
+| PL04 | Patinete universitário                   | 10 minutos                               | R$ 7,00                                 | PlanoUniversitarioTest.patineteNaoRecebeDesconto                          |
+| PL05 | Mensal com faixa gratuita                | Mecânica, 10 minutos                     | R$ 0,00                                 | PlanoMensalTest.primeiraFaixaGratuita                                     |
+| PL06 | Limite de bateria elétrica               | 19% e 20%                                | 19% rejeitado; 20% aceito               | BicicletaEletricaTest.liberaCom20ENaoLiberaCom19                          |
+| PL07 | Devolução em estação lotada              | Destino sem vagas                        | Estado e bateria não mudam              | BicicletaEletricaTest.devolucaoAtualizaBateriaNaoAlteraEmLotada           |
+| PL08 | Estado em uso e manutenção               | Veículo estacionado                      | Em uso não ocupa vaga; manutenção ocupa | VeiculoTest.emUsoNaoPermaneceNaEstacao                                    |
+| PL09 | Estação lotada                           | Uma vaga ocupada                         | EstacaoLotadaException                  | EstacaoTest.lotadaNaoEstacionaVeiculo                                     |
+| PL10 | Carteira negativa                        | Crédito R$ 10, débito R$ 12,50           | Saldo R$ -2,50                          | CarteiraTest.carteiraCreditaEDebitaPermitindoSaldoNegativo                |
+| PL11 | Arredondamento universitário             | Mecânica, 1 minuto                       | R$ 0,58                                 | PlanoUniversitarioTest.arredondaComHalfUp                                 |
+| PL12 | Piso da bateria do patinete              | 20% por 20 minutos                       | 0%                                      | PatineteEletricoTest.consumoDePatineteEValorMinimoDaBateria               |
+| PL13 | Usuário com carteira zerada              | Novo usuário                             | Saldo R$ 0,00                           | UsuarioTest.usuarioComecaComCarteiraZerada                                |
+| PL14 | Fluxo avulso completo                    | Mecânica, 12 minutos                     | R$ 2,80 e débito no extrato             | PlataformaTest.cadastraSemDuplicarECobraOsCincoExemplosDeFluxo            |
+| PL15 | Fluxo universitário elétrico completo    | Elétrica, 25 minutos                     | R$ 4,75 e débito no extrato             | PlataformaTest.cadastraSemDuplicarECobraOsCincoExemplosDeFluxo            |
+| PL16 | Fluxo mensal do patinete completo        | Patinete, 20 minutos                     | R$ 2,00 e débito no extrato             | PlataformaTest.cadastraSemDuplicarECobraOsCincoExemplosDeFluxo            |
+| PL17 | Fluxo universitário do patinete completo | Patinete, 10 minutos                     | R$ 7,00 e débito no extrato             | PlataformaTest.cadastraSemDuplicarECobraOsCincoExemplosDeFluxo            |
+| PL18 | Fluxo mensal com faixa gratuita completo | Mecânica, 10 minutos                     | R$ 0,00 e débito no extrato             | PlataformaTest.cadastraSemDuplicarECobraOsCincoExemplosDeFluxo            |
+| PL19 | Término posterior ao início              | Término igual ao início                  | IllegalArgumentException                | ViagemTest.terminoAnteriorOuIgualAoInicioEValidado                        |
+| PL20 | Extrato cronológico                      | Recarga e viagem                         | Lançamentos por data/hora               | LancamentoTest.extratoOrdenaRecargasEDebitosPorHorario                    |
+| PL21 | Faturamento por período                  | Viagem encerrada                         | Quantidade e valor por tipo e total     | FaturamentoTest.somaViagensEncerradasPorTipoDentroDoPeriodo               |
+| PL22 | Saldo mínimo para viajar                 | Saldo abaixo de R$ 5,00                  | SaldoInsuficienteException              | PlataformaTest.rejeitaSaldoMenorQueCincoVeiculoNaOrigemErradaEDuplicidade |
+| PL23 | Origem divergente e e-mail repetido      | Origem errada; e-mail em caixa diferente | IllegalArgumentException                | PlataformaTest.rejeitaSaldoMenorQueCincoVeiculoNaOrigemErradaEDuplicidade |
+| PL24 | Persistência completa                    | Dados fechados e viagem em andamento     | Gravação e carregamento restaurados     | PersistenciaTest.gravaECarregaViagemEncerradaViagemEmAndamentoERecargas   |     | PL25 | Minutos completos da viagem | 12 minutos e 30 segundos | Duração registrada como 12 minutos | ViagemTest.segundosExcedentesSaoDescartadosDaDuracao |

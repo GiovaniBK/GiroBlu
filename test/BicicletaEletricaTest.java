@@ -1,12 +1,15 @@
-package negocio;
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import negocio.BicicletaEletrica;
+import negocio.Veiculo;
+import negocio.Estacao;
 import negocio.excecao.EstacaoLotadaException;
 import negocio.excecao.VeiculoIndisponivelException;
 
 class BicicletaEletricaTest {
-    @Test void liberaCom20ENaoLiberaCom19() {
+    @Test
+    void liberaCom20ENaoLiberaCom19() {
         Estacao estacao = new Estacao("Centro", 5);
         BicicletaEletrica abaixo = new BicicletaEletrica("BE-19", "M", 19);
         estacao.estacionar(abaixo);
@@ -15,10 +18,11 @@ class BicicletaEletricaTest {
         BicicletaEletrica limite = new BicicletaEletrica("BE-20", "M", 20);
         estacao.estacionar(limite);
         limite.liberarParaViagem();
-        assertEquals(StatusVeiculo.EM_USO, limite.getStatus());
+        assertEquals(Veiculo.EM_USO, limite.getStatus());
     }
 
-    @Test void devolucaoAtualizaBateriaNaoAlteraEmLotada() {
+    @Test
+    void devolucaoAtualizaBateriaNaoAlteraEmLotada() {
         Estacao origem = new Estacao("Origem", 5);
         Estacao destino = new Estacao("Destino", 0);
         BicicletaEletrica bicicleta = new BicicletaEletrica("BE-80", "M", 80);

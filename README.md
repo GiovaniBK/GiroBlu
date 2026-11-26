@@ -12,7 +12,19 @@ Sistema de retaguarda em Java/Swing para bicicletas e patinetes compartilhados.
 - `src/`: código-fonte das camadas de apresentação e negócio
 - `test/`: testes JUnit
 - `lib/`: jar do JUnit usado nos testes
-- `dados-gb26/`: dados persistentes da aplicação
+- `data/`: dados persistentes da aplicação
+
+## Persistência
+
+Os dados ficam em `data/` em arquivos CSV separados para estações, veículos, usuários, recargas e viagens. Ao iniciar, o sistema carrega esses arquivos e toda operação relevante salva o estado atualizado.
+
+## Regra de duração
+
+A duração das viagens é calculada em minutos completos. Quando uma viagem possui segundos excedentes, esses segundos são descartados; por exemplo, 12 minutos e 30 segundos contam como 12 minutos.
+
+## Interface gráfica
+
+A janela principal usa abas para cadastros, recargas, viagens, manutenção e recarga de bateria, consultas, extrato e faturamento. Todas as operações passam pela mesma `Plataforma` carregada a partir de `data/`.
 
 ## Executar
 

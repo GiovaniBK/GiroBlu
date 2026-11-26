@@ -1,12 +1,13 @@
-package negocio;
-
 import static org.junit.jupiter.api.Assertions.*;
-import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 
+import negocio.BicicletaMecanica;
+import negocio.PlanoAvulso;
+
 class PlanoAvulsoTest {
-    @Test void calculaPrecoCompletoDaBicicletaMecanica() {
+    @Test
+    void calculaPrecoCompletoDaBicicletaMecanica() {
         BicicletaMecanica bicicleta = new BicicletaMecanica("BM-1", "Caloi");
-        assertEquals(new BigDecimal("2.80"), new PlanoAvulso().calcularValor(bicicleta, 12));
+        assertEquals(2.80, new PlanoAvulso().calcularValor(bicicleta, 12), 0.001);
     }
 }

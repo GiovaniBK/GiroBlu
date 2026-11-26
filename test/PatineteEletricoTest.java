@@ -1,7 +1,8 @@
-package negocio;
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import negocio.Estacao;
+import negocio.PatineteEletrico;
 
 class PatineteEletricoTest {
     @Test void consumoDePatineteEValorMinimoDaBateria() {

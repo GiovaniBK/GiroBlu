@@ -1,7 +1,8 @@
-package negocio;
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import negocio.BicicletaMecanica;
+import negocio.Estacao;
 import negocio.excecao.EstacaoLotadaException;
 
 class EstacaoTest {
